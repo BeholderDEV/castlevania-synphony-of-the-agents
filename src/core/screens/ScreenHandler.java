@@ -9,7 +9,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import core.AssetsManager;
-import core.player.PlayerHandler;
+import core.actors.player.PlayerHandler;
 
 /**
  *

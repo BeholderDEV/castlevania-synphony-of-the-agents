@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package core.player;
+package core.actors.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

@@ -7,7 +7,7 @@ package core.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import core.player.PlayerHandler;
+import core.actors.player.PlayerHandler;
 
 /**
  *

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package core.enemies;
+package core.actors.enemies;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import core.map.MapHandler;
@@ -21,13 +22,14 @@ public class SwordSkeleton extends Enemy{
     }
 
     @Override
-    public void updateBehavior(float deltaTime, MapHandler map) {
-        
+    public void updateActor(float deltaTime, MapHandler map) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public TextureRegion getCurrentFrame() {
-        return super.standImg;
+    public void renderActor(SpriteBatch batch) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
     
 }

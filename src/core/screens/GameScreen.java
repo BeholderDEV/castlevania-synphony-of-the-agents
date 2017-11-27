@@ -17,11 +17,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import core.AssetsManager;
-import core.enemies.Enemy;
-import core.enemies.EnemyFactory;
+import core.actors.GameActor;
+import core.actors.enemies.Enemy;
+import core.actors.enemies.EnemyFactory;
 import core.map.MapHandler;
-import core.player.PlayerBehavior;
-import core.player.PlayerHandler;
+import core.actors.player.PlayerBehavior;
+import core.actors.player.PlayerHandler;
 
 /**
  *
@@ -33,6 +34,7 @@ public class GameScreen implements Screen {
     private final ScreenHandler game;
     private final PlayerHandler player;
     private Array<Enemy> enemies = new Array<>();
+    private Array<GameActor> actors = new Array<>();
     private final Vector2 playerRenderCorrection = new Vector2(0, 0);
     private final MapHandler mapHandler;
     private OrthographicCamera camera;
@@ -57,10 +59,12 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0.5f, 0.5f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        for (Enemy enemy : enemies) {
-            enemy.updateBehavior(delta, mapHandler);
-        }
-        this.player.updatePlayer(delta, this.mapHandler);
+//        for (Enemy enemy : enemies) {
+//            enemy.updateBehavior(delta, mapHandler);
+//        }
+//        this.player.updatePlayer(delta, this.mapHandler);
+        
+        
         
         this.updateCameraPosition();
         this.camera.update();
@@ -69,13 +73,13 @@ public class GameScreen implements Screen {
         this.mapHandler.getMapRenderer().render();
         this.game.batch.setProjectionMatrix(camera.combined);
         this.game.batch.begin();
-        for (Enemy enemy : enemies) {
-            this.game.batch.draw(enemy.getCurrentFrame(), 
-                (enemy.isFacesRight()) ? enemy.getBody().x: enemy.getBody().x + enemy.getBody().width,
-                enemy.getBody().y, 
-                (enemy.isFacesRight()) ? enemy.getBody().width: -enemy.getBody().width,
-                enemy.getBody().height);
-        }
+//        for (Enemy enemy : enemies) {
+//            this.game.batch.draw(enemy.getCurrentFrame(), 
+//                (enemy.isFacesRight()) ? enemy.getBody().x: enemy.getBody().x + enemy.getBody().width,
+//                enemy.getBody().y, 
+//                (enemy.isFacesRight()) ? enemy.getBody().width: -enemy.getBody().width,
+//                enemy.getBody().height);
+//        }
         this.renderPlayer();
         this.player.drawRecOnPlayer(this.game.batch);
         this.game.batch.end();        
