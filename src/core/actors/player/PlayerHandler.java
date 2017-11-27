@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import core.actors.GameActor;
 import core.map.MapHandler;
 
@@ -19,10 +20,10 @@ import core.map.MapHandler;
 public class PlayerHandler extends GameActor{
     private PlayerAnimation animationHandler;
     private PlayerBehavior behaviorHandler;
-//    private float stateTime = 0;
+    private final Vector2 playerRenderCorrection = new Vector2(0, 0);
     
     public PlayerHandler() {
-        super(new Rectangle());
+        super(new Rectangle(0, 0, PlayerBehavior.NORMAL_WIDTH, PlayerBehavior.NORMAL_HEIGHT));
         this.animationHandler = new PlayerAnimation();
         this.behaviorHandler = new PlayerBehavior(this);
     }
@@ -37,11 +38,61 @@ public class PlayerHandler extends GameActor{
     
     @Override
     public void renderActor(SpriteBatch batch) {
-        
+        float x = super.body.x, y = super.body.y, w = super.body.width, h = super.body.height; 
+        this.playerRenderCorrection.set(0, 0);
+        Rectangle playerRec = super.body;
+        TextureRegion currentFrame = this.getCurrentFrame();
+        if(playerRec.x < 0){
+            playerRec.setX(0);
+        }
+        if(!super.facingRight){
+            x += w;
+        }
+        if(super.currentState == GameActor.State.ATTACKING){
+            this.adjustPlayerRenderCorrections(currentFrame);
+            w = currentFrame.getRegionWidth() * MapHandler.unitScale;
+            h = currentFrame.getRegionHeight() * MapHandler.unitScale;
+            if(this.behaviorHandler.getAtkState() == PlayerBehavior.Atk_State.CROUCH_ATK){
+                h += 1.2f;
+            }
+        }
+
+        batch.draw(currentFrame, 
+                (super.facingRight) ? x - this.playerRenderCorrection.x: x + this.playerRenderCorrection.x,
+                y + this.playerRenderCorrection.y, 
+                (super.facingRight) ? w: -w,
+                h);
+    }
+    
+    private void adjustPlayerRenderCorrections(TextureRegion currentFrame){
+        switch(currentFrame.getRegionX()){
+            case 33:
+                if(this.behaviorHandler.getAtkState() != PlayerBehavior.Atk_State.CROUCH_ATK){
+                    this.playerRenderCorrection.x = 1.7f;
+                    this.playerRenderCorrection.y = -PlayerBehavior.DISTANCE_FROM_GROUND_LAYER;
+                }else{
+                    this.playerRenderCorrection.x = 1.5f;
+                }
+            break;
+            case 86:
+                if(this.behaviorHandler.getAtkState() != PlayerBehavior.Atk_State.CROUCH_ATK){
+                    this.playerRenderCorrection.x = 3.7f;
+                }else{
+                    this.playerRenderCorrection.x = 3.4f;
+                }
+            break;
+            case 157:
+                if(this.behaviorHandler.getAtkState() != PlayerBehavior.Atk_State.CROUCH_ATK){
+                    this.playerRenderCorrection.y = -0.2f;
+                }else{
+                    this.playerRenderCorrection.x = -0.4f;
+                }                
+            break;
+        }
     }
     
     public TextureRegion getCurrentFrame(){
-        switch(this.behaviorHandler.getCurrentState()){
+        switch(super.currentState){
             case WALKING:
                 return this.animationHandler.getWalkAnimation().getKeyFrame(super.stateTime, true);
             case JUMPING:
@@ -68,8 +119,8 @@ public class PlayerHandler extends GameActor{
             return this.animationHandler.getDeathAnimation().getKeyFrame(super.stateTime);
         }
         TextureRegion deathSprite = this.animationHandler.getDeathAnimation().getKeyFrame(super.stateTime);
-        this.behaviorHandler.getPlayerBody().width = deathSprite.getRegionWidth() * MapHandler.unitScale;
-        this.behaviorHandler.getPlayerBody().height = deathSprite.getRegionHeight() * MapHandler.unitScale;
+        super.body.width = deathSprite.getRegionWidth() * MapHandler.unitScale;
+        super.body.height = deathSprite.getRegionHeight() * MapHandler.unitScale;
         return deathSprite;
     }
     
@@ -77,22 +128,22 @@ public class PlayerHandler extends GameActor{
         if(atkAnimation.isAnimationFinished(stateTime)){
             switch(this.behaviorHandler.getAtkState()){
                 case CROUCH_ATK:
-                    this.behaviorHandler.getPlayerBody().setSize(PlayerBehavior.NORMAL_WIDTH, Math.round(PlayerBehavior.NORMAL_HEIGHT - PlayerBehavior.NORMAL_HEIGHT * 0.25));
-                    this.behaviorHandler.setCurrentState(PlayerBehavior.State.CROUNCHING);
+                    super.body.setSize(PlayerBehavior.NORMAL_WIDTH, Math.round(PlayerBehavior.NORMAL_HEIGHT - PlayerBehavior.NORMAL_HEIGHT * 0.25));
+                    super.currentState = GameActor.State.CROUNCHING;
                     return this.animationHandler.getCrouchImg();
                 case JUMP_ATK:
-                    this.behaviorHandler.getPlayerBody().setSize(PlayerBehavior.NORMAL_WIDTH, PlayerBehavior.NORMAL_HEIGHT);
-                    this.behaviorHandler.setCurrentState(PlayerBehavior.State.JUMPING);
+                    super.body.setSize(PlayerBehavior.NORMAL_WIDTH, PlayerBehavior.NORMAL_HEIGHT);
+                    super.currentState = GameActor.State.JUMPING;
                     return this.animationHandler.getJumpImg();
                 case STAIRS_ATK:
-                    this.behaviorHandler.getPlayerBody().setSize(PlayerBehavior.NORMAL_WIDTH, PlayerBehavior.NORMAL_HEIGHT);
-                    this.behaviorHandler.setCurrentState(PlayerBehavior.State.ON_STAIRS);
+                    super.body.setSize(PlayerBehavior.NORMAL_WIDTH, PlayerBehavior.NORMAL_HEIGHT);
+                    super.currentState = GameActor.State.ON_STAIRS;
                     return (this.behaviorHandler.isUpstairs()) ? 
                             this.animationHandler.getUpStairsAtkAnimation().getKeyFrame(super.stateTime) :
                             this.animationHandler.getDownstairsAnimation().getKeyFrame(super.stateTime);
                 default:
-                    this.behaviorHandler.getPlayerBody().setSize(PlayerBehavior.NORMAL_WIDTH, PlayerBehavior.NORMAL_HEIGHT);
-                    this.behaviorHandler.setCurrentState(PlayerBehavior.State.STANDING);
+                    super.body.setSize(PlayerBehavior.NORMAL_WIDTH, PlayerBehavior.NORMAL_HEIGHT);
+                    super.currentState = GameActor.State.STANDING;
                     return this.animationHandler.getStandImg();
             }
         }
@@ -100,7 +151,7 @@ public class PlayerHandler extends GameActor{
     }
     
     public boolean isDead(){
-        return this.behaviorHandler.getCurrentState() == PlayerBehavior.State.DYING && this.animationHandler.getDeathAnimation().isAnimationFinished(stateTime);
+        return super.currentState == GameActor.State.DYING && this.animationHandler.getDeathAnimation().isAnimationFinished(stateTime);
     }
 
     
@@ -109,27 +160,23 @@ public class PlayerHandler extends GameActor{
     }
     
     public Rectangle getPlayerBody(){
-        return this.behaviorHandler.getPlayerBody();
-    }
-    
-    public boolean isFacingRight(){
-        return this.behaviorHandler.isFacingRight();
+        return super.body;
     }
 
     public float getStateTime() {
         return stateTime;
     }
-    
-    public PlayerBehavior.State getCurrentState(){
-        return this.behaviorHandler.getCurrentState();
-    }
-    
+        
     public PlayerBehavior.Atk_State getCurrentAtkState(){
         return this.behaviorHandler.getAtkState();
     }
     
     public void setStateTime(float stateTime) {
         super.stateTime = stateTime;
+    }
+
+    public void setCurrentState(State currentState) {
+        this.currentState = currentState;
     }
     
     public void changeStateTime(float delta){

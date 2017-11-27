@@ -5,9 +5,11 @@
  */
 package core.actors.enemies;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import core.AssetsManager;
 import core.map.MapHandler;
 
 /**
@@ -16,19 +18,22 @@ import core.map.MapHandler;
  */
 public class SwordSkeleton extends Enemy{
     
-    
     public SwordSkeleton(int walkingSpeed, Rectangle body) {
         super(walkingSpeed, body);
+        super.standImg = standImg = new TextureRegion(AssetsManager.assets.get("assets/img/superIV_Enemies.png", Texture.class), 312, 143, 30, 49);
     }
 
     @Override
     public void updateActor(float deltaTime, MapHandler map) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     @Override
     public void renderActor(SpriteBatch batch) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        batch.draw(super.standImg, (super.facingRight) ? super.body.x: super.body.x + super.body.width, 
+                super.body.y, 
+                (super.facingRight) ? super.body.width: -super.body.width, 
+                super.body.height);
     }
 
     
