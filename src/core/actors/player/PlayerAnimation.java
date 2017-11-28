@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import core.AnimationManager;
 import core.AssetsManager;
+import core.actors.GameActor;
 
 /**
  *
@@ -52,7 +53,7 @@ public class PlayerAnimation {
         this.downStairsAtkAnimation = AnimationManager.generateAnimation(AssetsManager.assets.get("assets/img/playerSprites.png", Texture.class),  new int[]{33, 86, 157}, new int[]{771, 759, 772}, new int[]{45, 55, 79}, new int[]{52, 59, 46}, Animation.PlayMode.NORMAL, STANDARD_ATK_FRAME_TIME);
     }
     
-    public Animation<TextureRegion> getCorrectAtkAnimation(PlayerBehavior.Atk_State atkState, boolean upStairs){
+    public Animation<TextureRegion> getCorrectAtkAnimation(GameActor.Atk_State atkState, boolean upStairs){
         switch(atkState){
             case STAND_ATK:
                 return this.standAtkAnimation;

@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import core.actors.GameActor;
 import core.map.MapHandler;
 import java.awt.Dimension;
 
@@ -82,8 +83,8 @@ public class StairHandler {
         Vector2 ground = map.getCloseTileFromLayer(MapHandler.Layer.GROUND, footTileX, footTileY, this.upstairs, facesRight, STAIR_TO_GROUND_DISTANCE);
         if(ground != null){
             this.objectBody.y = (map.checkValidLayerMove(MapHandler.Layer.GROUND, Math.round(ground.x), Math.round(ground.y + 1))) 
-                                ? ground.y + 1 + PlayerBehavior.DISTANCE_FROM_GROUND_LAYER
-                                : ground.y + PlayerBehavior.DISTANCE_FROM_GROUND_LAYER;
+                                ? ground.y + 1 + GameActor.DISTANCE_FROM_GROUND_LAYER
+                                : ground.y + GameActor.DISTANCE_FROM_GROUND_LAYER;
             if(this.upstairs && facesRight){
                 this.objectBody.x = ground.x - 2f;
             }

@@ -10,7 +10,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import core.AssetsManager;
 import core.actors.GameActor;
 import core.map.MapHandler;
@@ -21,22 +20,13 @@ import java.awt.Dimension;
  * @author Alisson
  */
 public class PlayerBehavior {
-//    
-//    public enum State {
-//        STANDING, WALKING, JUMPING, CROUNCHING, ON_STAIRS, DYING, ATTACKING
-//    }
-//    
-    public enum Atk_State {
-        STAND_ATK, CROUCH_ATK, JUMP_ATK, STAIRS_ATK
-    }
     
-    public static final float DISTANCE_FROM_GROUND_LAYER = 0.4f;
     public static final float NORMAL_WIDTH = 4f;
     public static final float NORMAL_HEIGHT = 6f;
     public static final Dimension FOOT_SIZE = new Dimension(32, 25);
     private PlayerHandler playerHandler;
     private StairHandler stairHandler;
-    private Atk_State atkState = Atk_State.STAND_ATK;
+    
 
     public PlayerBehavior(PlayerHandler handler) {
         this.playerHandler = handler;
@@ -59,7 +49,7 @@ public class PlayerBehavior {
                 this.defineActionOnStairs(deltaTime, map);
             break;
             case ATTACKING:
-                if(this.atkState == Atk_State.JUMP_ATK){
+                if(this.playerHandler.getCurrentAtkState() == GameActor.Atk_State.JUMP_ATK){
                     this.defineActionJumping(deltaTime);
                 }
             break;
@@ -75,7 +65,7 @@ public class PlayerBehavior {
         }
         if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.F)){
             this.playerHandler.setCurrentState(GameActor.State.ATTACKING);
-            this.atkState = Atk_State.STAND_ATK;
+            this.playerHandler.setAtkState(GameActor.Atk_State.STAND_ATK);
             this.playerHandler.setStateTime(0);
             return;
         }
@@ -113,7 +103,7 @@ public class PlayerBehavior {
         }
         if(this.playerHandler.getCurrentState() != GameActor.State.ATTACKING && (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.F))){
             this.playerHandler.setCurrentState(GameActor.State.ATTACKING);
-            this.atkState = Atk_State.JUMP_ATK;
+            this.playerHandler.setAtkState(GameActor.Atk_State.JUMP_ATK);
             this.playerHandler.setStateTime(0);
         }
     }
@@ -122,7 +112,7 @@ public class PlayerBehavior {
         this.playerHandler.getVelocity().set(0, 0);
         if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.F)){
             this.playerHandler.setCurrentState(GameActor.State.ATTACKING);
-            this.atkState = atkState.CROUCH_ATK;
+            this.playerHandler.setAtkState(GameActor.Atk_State.CROUCH_ATK);
             this.playerHandler.setStateTime(0);
             return;
         }
@@ -142,7 +132,7 @@ public class PlayerBehavior {
         }
         if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.F)){
             this.playerHandler.setCurrentState(GameActor.State.ATTACKING);
-            this.atkState = Atk_State.STAIRS_ATK;
+            this.playerHandler.setAtkState(GameActor.Atk_State.STAIRS_ATK);
             this.playerHandler.setStateTime(0);
             return;
         }
@@ -174,7 +164,7 @@ public class PlayerBehavior {
     }
         
     public void checkCollisions(MapHandler map){
-        this.checkGroundCollision(map);
+        this.playerHandler.checkGroundCollision(map);
         if(this.playerHandler.getCurrentState() == GameActor.State.STANDING || this.playerHandler.getCurrentState() == GameActor.State.WALKING){
             Rectangle stairBoundary = this.stairHandler.checkStairsCollision(map, this.playerHandler.isFacingRight());
             if(stairBoundary != null){
@@ -184,27 +174,11 @@ public class PlayerBehavior {
             }
         }
     }
-    
-    private void checkGroundCollision(MapHandler map){
-        if(map.checkLayerCollision(MapHandler.Layer.GROUND, Math.round(this.playerHandler.getBody().x), Math.round(this.playerHandler.getBody().y), Math.round(this.playerHandler.getBody().x + this.playerHandler.getBody().width), Math.round(this.playerHandler.getBody().y + this.playerHandler.getBody().height * 0.01f))){
-            if(this.playerHandler.getCurrentState() == GameActor.State.JUMPING || (this.playerHandler.getCurrentState() == GameActor.State.ATTACKING && this.atkState == Atk_State.JUMP_ATK)){
-                this.playerHandler.setCurrentState(GameActor.State.STANDING);
-                this.playerHandler.getBody().y = Math.round(this.playerHandler.getBody().y) + this.DISTANCE_FROM_GROUND_LAYER;
-            }
-        }else if(this.playerHandler.getCurrentState() != GameActor.State.JUMPING && this.playerHandler.getCurrentState() != GameActor.State.ON_STAIRS && this.playerHandler.getCurrentState() != GameActor.State.ATTACKING){
-            this.playerHandler.setCurrentState(GameActor.State.JUMPING);
-        }
-    }
-            
-    public void updatePosition(float delta){
-        this.playerHandler.getBody().x += this.playerHandler.getVelocity().x * delta * ((this.playerHandler.isFacingRight()) ? 1: -1);
-        this.playerHandler.getBody().y += this.playerHandler.getVelocity().y * delta;
-    }
-    
+                    
 //    Used for debug
     public void drawRec(SpriteBatch batch){
+
         // When Jumping frame is faster and a little lower
-        
         if((this.playerHandler.getCurrentState() == GameActor.State.ATTACKING) && this.playerHandler.getStateTime() >= PlayerAnimation.STANDARD_ATK_FRAME_TIME * 2f){
             float x = (this.playerHandler.isFacingRight()) 
                       ? (this.playerHandler.getBody().x + this.playerHandler.getBody().width) - this.playerHandler.getBody().width * ((this.FOOT_SIZE.width - 30f) / 100f) 
@@ -238,12 +212,7 @@ public class PlayerBehavior {
 ////        batch.draw(AssetsManager.assets.get("assets/img/square.png", Texture.class), 63, 4, 1, 1);
 //        batch.draw(AssetsManager.assets.get("assets/img/square.png", Texture.class), 63, 5, 1, 1);
     }
-    
-    
-    public Atk_State getAtkState() {
-        return atkState;
-    }
-    
+        
     public boolean isUpstairs(){
         return this.stairHandler.isUpstairs();
     }

@@ -32,7 +32,7 @@ public class PlayerHandler extends GameActor{
     public void updateActor(float deltaTime, MapHandler map){
         super.stateTime += deltaTime;
         this.behaviorHandler.defineAction(deltaTime, map);
-        this.behaviorHandler.updatePosition(deltaTime);
+        super.updatePosition(deltaTime);
         this.behaviorHandler.checkCollisions(map);
     }
     
@@ -52,7 +52,7 @@ public class PlayerHandler extends GameActor{
             this.adjustPlayerRenderCorrections(currentFrame);
             w = currentFrame.getRegionWidth() * MapHandler.unitScale;
             h = currentFrame.getRegionHeight() * MapHandler.unitScale;
-            if(this.behaviorHandler.getAtkState() == PlayerBehavior.Atk_State.CROUCH_ATK){
+            if(this.atkState == GameActor.Atk_State.CROUCH_ATK){
                 h += 1.2f;
             }
         }
@@ -67,22 +67,22 @@ public class PlayerHandler extends GameActor{
     private void adjustPlayerRenderCorrections(TextureRegion currentFrame){
         switch(currentFrame.getRegionX()){
             case 33:
-                if(this.behaviorHandler.getAtkState() != PlayerBehavior.Atk_State.CROUCH_ATK){
+                if(this.atkState != GameActor.Atk_State.CROUCH_ATK){
                     this.playerRenderCorrection.x = 1.7f;
-                    this.playerRenderCorrection.y = -PlayerBehavior.DISTANCE_FROM_GROUND_LAYER;
+                    this.playerRenderCorrection.y = -GameActor.DISTANCE_FROM_GROUND_LAYER;
                 }else{
                     this.playerRenderCorrection.x = 1.5f;
                 }
             break;
             case 86:
-                if(this.behaviorHandler.getAtkState() != PlayerBehavior.Atk_State.CROUCH_ATK){
+                if(this.atkState != GameActor.Atk_State.CROUCH_ATK){
                     this.playerRenderCorrection.x = 3.7f;
                 }else{
                     this.playerRenderCorrection.x = 3.4f;
                 }
             break;
             case 157:
-                if(this.behaviorHandler.getAtkState() != PlayerBehavior.Atk_State.CROUCH_ATK){
+                if(this.atkState != GameActor.Atk_State.CROUCH_ATK){
                     this.playerRenderCorrection.y = -0.2f;
                 }else{
                     this.playerRenderCorrection.x = -0.4f;
@@ -108,7 +108,7 @@ public class PlayerHandler extends GameActor{
             case DYING:
                 return this.defineDeathSprite();
             case ATTACKING:
-                return this.defineAtkSprite(this.animationHandler.getCorrectAtkAnimation(this.behaviorHandler.getAtkState(), this.behaviorHandler.isUpstairs()));
+                return this.defineAtkSprite(this.animationHandler.getCorrectAtkAnimation(this.atkState, this.behaviorHandler.isUpstairs()));
             default:
                 return this.animationHandler.getStandImg();
         }
@@ -126,7 +126,7 @@ public class PlayerHandler extends GameActor{
     
     private TextureRegion defineAtkSprite(Animation<TextureRegion> atkAnimation){
         if(atkAnimation.isAnimationFinished(stateTime)){
-            switch(this.behaviorHandler.getAtkState()){
+            switch(this.atkState){
                 case CROUCH_ATK:
                     super.body.setSize(PlayerBehavior.NORMAL_WIDTH, Math.round(PlayerBehavior.NORMAL_HEIGHT - PlayerBehavior.NORMAL_HEIGHT * 0.25));
                     super.currentState = GameActor.State.CROUNCHING;
@@ -167,8 +167,8 @@ public class PlayerHandler extends GameActor{
         return stateTime;
     }
         
-    public PlayerBehavior.Atk_State getCurrentAtkState(){
-        return this.behaviorHandler.getAtkState();
+    public Atk_State getCurrentAtkState(){
+        return this.atkState;
     }
     
     public void setStateTime(float stateTime) {
@@ -177,6 +177,10 @@ public class PlayerHandler extends GameActor{
 
     public void setCurrentState(State currentState) {
         this.currentState = currentState;
+    }
+
+    public void setAtkState(Atk_State atkState) {
+        this.atkState = atkState;
     }
     
     public void changeStateTime(float delta){
