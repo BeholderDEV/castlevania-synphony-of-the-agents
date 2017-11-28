@@ -18,7 +18,8 @@ import core.actors.GameActor;
  */
 public abstract class Enemy extends GameActor{
     protected TextureRegion standImg;
-//    protected Animation<TextureRegion> walkAnimation = ;
+    protected Animation<TextureRegion> movingAnimation;
+    protected Animation<TextureRegion> atkAnimation;
 //    protected Agent enemyBehavior  ----- integration with JADE
 
     public Enemy(int walkingSpeed, Rectangle body) {
@@ -26,10 +27,6 @@ public abstract class Enemy extends GameActor{
         super.facingRight = false;
     }
     
-    public Rectangle getBody() {
-        return body;
-    }
-
     @Override
     public boolean isDead() {
         return super.currentState == GameActor.State.DYING;
