@@ -25,6 +25,7 @@ public class AssetsManager {
         
         assets.load("assets/img/superIV_Enemies.png", Texture.class);
         assets.load("assets/img/playerSprites.png", Texture.class); // Asynchronous loading
+        assets.load("assets/img/bone-archer.png", Texture.class); // Asynchronous loading
         assets.finishLoading(); // Forces to wait until all assets are loaded
 //        assets.get("assets/img/playerSprites.png", Texture.class).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 //        float progress = assets.getProgress();

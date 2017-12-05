@@ -17,6 +17,8 @@ import core.actors.GameActor;
  * @author Alisson
  */
 public class PlayerAnimation {
+
+    public static float STANDARD_ATK_FRAME_TIME;
     
     private final TextureRegion standImg;
     private final TextureRegion jumpImg;

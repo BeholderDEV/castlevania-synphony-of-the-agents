@@ -53,6 +53,7 @@ public class GameScreen implements Screen {
         player.getBody().setPosition(23, 3.4f);
         this.actors.add(player);
         this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.SWORD_SKELETON, 12, new Vector2(53, 3.4f), 5f, 6f, this));
+        this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.ARCHER_SKELETON, 6, new Vector2(40, 3.4f), 5f, 6f, this));
     }
 
     @Override

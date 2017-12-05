@@ -18,7 +18,8 @@ public class EnemyFactory {
     
     
     public enum enemyType{
-        SWORD_SKELETON
+        SWORD_SKELETON,
+        ARCHER_SKELETON
     }
     
     public static Enemy createEnemy(enemyType type, int walkingSpeed, Vector2 position, float width, float height, GameScreen gameScreen){
@@ -28,6 +29,8 @@ public class EnemyFactory {
         switch(type){
             case SWORD_SKELETON:
                 return new SwordSkeleton(walkingSpeed, enemyBody, gameScreen);
+            case ARCHER_SKELETON:
+                return new ArcherSkeleton(walkingSpeed, enemyBody, gameScreen);
         }
         return null;
     }

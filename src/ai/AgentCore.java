@@ -5,7 +5,9 @@
  */
 package ai;
 
+import ai.behavior.ArcherAgentBehavior;
 import ai.behavior.SwordAgentBehavior;
+import core.actors.enemies.ArcherSkeleton;
 import core.actors.enemies.SwordSkeleton;
 import jade.core.Agent;
 
@@ -22,6 +24,9 @@ public class AgentCore extends Agent{
         if(args != null && args.length > 0){
             if(getAID().getName().startsWith("Skeleton_Sword")){
                 addBehaviour(new SwordAgentBehavior((SwordSkeleton) args[0], this, AgentCreator.BEHAVIOR_DELAY));
+            }
+            if(getAID().getName().startsWith("Skeleton_Archer")){
+                addBehaviour(new ArcherAgentBehavior((ArcherSkeleton) args[0], this, AgentCreator.BEHAVIOR_DELAY));
             }
         }
     }

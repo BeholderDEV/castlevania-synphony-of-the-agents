@@ -21,13 +21,15 @@ import jade.core.Runtime;
 
 public class AgentCreator {
     public enum AgentType{
-        SKELETON_SWORD
+        SKELETON_SWORD,
+        SKELETON_ARCHER
     }
     
     private static AgentCreator instance = null;
     private final HashMap<String, ContainerController> containerMap = new HashMap<>();
     public static final long BEHAVIOR_DELAY = 18; // milliseconds
     public static int swordNameCount = 1;
+    public static int archerNameCount = 1;
     
     private AgentCreator(){
         Runtime rt = Runtime.instance();
@@ -61,6 +63,9 @@ public class AgentCreator {
             switch(agentType){
                 case SKELETON_SWORD:
                     cc.createNewAgent("Skeleton_Sword_" + swordNameCount++, "ai.AgentCore", args).start();
+                break;
+                case SKELETON_ARCHER:
+                    cc.createNewAgent("Skeleton_Archer_" + archerNameCount++, "ai.AgentCore", args).start();
                 break;
             }
         } catch (StaleProxyException ex) {
