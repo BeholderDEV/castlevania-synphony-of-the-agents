@@ -39,6 +39,9 @@ public class SwordAgentBehavior extends AgentBehavior{
             case ATTACKING:
                 super.updateAtk();
             break;
+            case JUMPING:
+                this.container.fallFromJump();
+            break;
             case DYING:
                 super.myAgent.doDelete();
             break;
@@ -47,13 +50,16 @@ public class SwordAgentBehavior extends AgentBehavior{
     
     private void defineActionStanding(){
         super.container.setCurrentState(GameActor.State.WALKING);
-        super.container.getVelocity().x = super.container.getWalkingSpeed();
-        super.container.setFacingRight((int) super.container.getStateTime() % 2 == 1);
+        super.container.getVelocity().x = (super.container.foundPlayer()) ? super.container.getWalkingSpeed(): super.container.getWalkingSpeed() / 2f;
+        super.container.setFacingRight(this.container.getBody().x - this.player.getBody().x < 0);
     }
         
     private void defineActionWalking(){
-        this.defineActionStanding();
-        if(this.isPlayerOnRange()){
+        if(this.container.getStateTime() >= 1f){
+            this.container.setStateTime(0);
+            super.container.setFacingRight(this.container.getBody().x - this.player.getBody().x < 0);
+        }
+        if(this.container.foundPlayer() && this.isPlayerOnRange()){
             super.container.setStateTime(0);
             super.container.getVelocity().set(0, 0);
             super.container.setCurrentState(GameActor.State.ATTACKING);
@@ -63,8 +69,8 @@ public class SwordAgentBehavior extends AgentBehavior{
     //Later check weapon range instead of distance
     private boolean isPlayerOnRange(){
         float currentDistance = this.container.getBody().x - this.player.getBody().x;
-        if(Math.abs(currentDistance) <= DISTANCE_TO_ATK_PLAYER && this.container.getBody().y == this.player.getBody().y){
-            this.container.setFacingRight(currentDistance < 0);
+        if(Math.abs(currentDistance) <= DISTANCE_TO_ATK_PLAYER && (this.container.getBody().y + this.container.getBody().height) > this.player.getBody().y){
+            this.container.setFacingRight(this.container.getBody().x - this.player.getBody().x < 0);
             return true;
         }
         return false;
@@ -72,6 +78,14 @@ public class SwordAgentBehavior extends AgentBehavior{
     
     @Override
     public void checkCollisions(){
+        CollisionHandler.checkGroundCollision(this.container.getGameScreen().getMapHandler(), this.container);
+        if(this.container.getCurrentState() == GameActor.State.JUMPING){
+            if(this.container.getVelocity().y == 0){
+                this.container.getVelocity().y = this.container.getJumpingSpeed();
+            }
+        }else{
+            this.container.getVelocity().y = 0;
+        }
         if(this.container.getCurrentState() == GameActor.State.ATTACKING && this.container.getStateTime() >= GameActor.STANDARD_ATK_FRAME_TIME * 2){
             this.updateWeaponHit();
         }
@@ -79,7 +93,7 @@ public class SwordAgentBehavior extends AgentBehavior{
     
     @Override
     public void checkStatus(){
-        if(super.container.getLifePoints() <= 0){
+        if(super.container.getLifePoints() <= 0 || super.container.getBody().y < 0){
             super.container.getVelocity().set(0, 0);
             super.container.setCurrentState(GameActor.State.DYING);
         }

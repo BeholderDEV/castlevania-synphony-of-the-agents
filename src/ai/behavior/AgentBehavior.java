@@ -5,6 +5,7 @@
  */
 package ai.behavior;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import core.actors.GameActor;
 import core.actors.enemies.Enemy;
 import jade.core.Agent;
@@ -32,6 +33,9 @@ public abstract class AgentBehavior extends TickerBehaviour{
             return;
         }
 //        this.container.setStateTime(this.container);
+        if(!this.container.foundPlayer()){
+            this.checkIfFoundPlayer();
+        }
         this.defineAction();
         this.container.updatePosition(this.container.getGameScreen().getLastDelta());
         this.checkCollisions();
@@ -49,6 +53,17 @@ public abstract class AgentBehavior extends TickerBehaviour{
     protected void updateAtk(){
         if(this.container.getAtkAnimation().isAnimationFinished(this.container.getStateTime())){
             this.container.setCurrentState(GameActor.State.STANDING);
+        }
+    }
+    
+    protected void checkIfFoundPlayer(){
+        OrthographicCamera camera = this.container.getGameScreen().getCamera();
+        float dx = Math.abs(this.container.getBody().x - this.container.getGameScreen().getActors().get(0).getBody().x);
+        float dy = Math.abs(this.container.getBody().y - this.container.getGameScreen().getActors().get(0).getBody().y);
+//        System.out.println(camera.viewportWidth);
+        if(dx < camera.viewportWidth / 2f && dy < camera.viewportHeight / 2f){
+            this.container.setFoundPlayer(true);
+            this.container.getVelocity().x = this.container.getWalkingSpeed();
         }
     }
     

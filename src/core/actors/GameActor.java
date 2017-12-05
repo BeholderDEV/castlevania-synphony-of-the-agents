@@ -53,6 +53,18 @@ public abstract class GameActor {
         this.body = body;
     }
     
+    public abstract void updateActor(float deltaTime, MapHandler map, Array<GameActor> stageActors);
+    
+    public abstract void renderActor(SpriteBatch batch);
+    
+    public abstract void receiveDamage(Rectangle dmgReason, int dmgPoints);
+    
+    public abstract TextureRegion getCurrentFrame();
+    
+    public abstract void drawDebugRec(SpriteBatch batch);
+    
+    protected abstract void adjustRenderCorrections(TextureRegion currentFrame);
+    
     public void updatePosition(float delta){
         this.body.x += this.velocity.x * delta * ((this.facingRight) ? 1: -1);
         this.body.y += this.velocity.y * delta;
@@ -82,8 +94,6 @@ public abstract class GameActor {
         return new float[]{x, y, w, h};
     }
     
-    
-    
     public void drawRecOverBody(SpriteBatch batch){
         float ad = 1.6f;
         batch.draw(AssetsManager.assets.get("assets/img/squarer.png", Texture.class),(this.facingRight) ?this.body.x + 0.4f: this.body.x + 0.4f, 
@@ -92,18 +102,13 @@ public abstract class GameActor {
                 this.body.height - 0.9f);
     }
     
-    public abstract void updateActor(float deltaTime, MapHandler map, Array<GameActor> stageActors);
-    
-    public abstract void renderActor(SpriteBatch batch);
-    
-    public abstract void receiveDamage(Rectangle dmgReason, int dmgPoints);
-    
-    public abstract TextureRegion getCurrentFrame();
-    
-    public abstract void drawDebugRec(SpriteBatch batch);
-    
-    protected abstract void adjustRenderCorrections(TextureRegion currentFrame);
-    
+    public void fallFromJump(){
+        this.velocity.y = (this.velocity.y < 0) ? this.velocity.y - this.jumpingSpeed / 28f : this.velocity.y - this.jumpingSpeed /21f;
+        this.velocity.x = (this.velocity.x > 0) ? this.velocity.x + this.walkingSpeed / 1.1f: 0;
+        if(this.velocity.x >= this.walkingSpeed){
+            this.velocity.x = this.walkingSpeed;
+        }
+    }
     
     public Rectangle getBody() {
         return body;

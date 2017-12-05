@@ -25,6 +25,7 @@ public abstract class Enemy extends GameActor{
     protected GameScreen gameScreen;
     protected boolean blinking = false;
     protected boolean canDelete = false;
+    protected boolean foundPlayer = false;
     
     public Enemy(int walkingSpeed, Rectangle body, GameScreen gameScreen) {
         super(walkingSpeed, body);
@@ -76,6 +77,10 @@ public abstract class Enemy extends GameActor{
         return blinking;
     }
 
+    public boolean foundPlayer() {
+        return foundPlayer;
+    }
+
     public boolean canDelete() {
         return canDelete;
     }
@@ -94,5 +99,9 @@ public abstract class Enemy extends GameActor{
     
     public void setForDelete(){
         this.canDelete = true;
+    }
+
+    public void setFoundPlayer(boolean foundPlayer) {
+        this.foundPlayer = foundPlayer;
     }
 }

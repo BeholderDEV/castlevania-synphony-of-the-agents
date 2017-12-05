@@ -106,11 +106,7 @@ public class PlayerBehavior {
     }
     
     private void defineActionJumping(float deltaTime){
-        this.playerHandler.getVelocity().y = (this.playerHandler.getVelocity().y < 0) ? this.playerHandler.getVelocity().y - this.playerHandler.getJumpingSpeed() / 28f : this.playerHandler.getVelocity().y - this.playerHandler.getJumpingSpeed() /21f;
-        this.playerHandler.getVelocity().x = (this.playerHandler.getVelocity().x > 0) ? this.playerHandler.getVelocity().x + this.playerHandler.getWalkingSpeed() / 1.1f: 0;
-        if(this.playerHandler.getVelocity().x >= this.playerHandler.getWalkingSpeed()){
-            this.playerHandler.getVelocity().x = this.playerHandler.getWalkingSpeed();
-        }
+        this.playerHandler.fallFromJump();
         if(this.playerHandler.getCurrentState() != GameActor.State.ATTACKING && (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.F))){
             this.playerHandler.setCurrentState(GameActor.State.ATTACKING);
             this.playerHandler.setAtkState(GameActor.Atk_State.JUMP_ATK);
