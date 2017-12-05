@@ -64,14 +64,14 @@ public abstract class GameActor {
         if(!this.facingRight){
             x += w;
         }
-        if(this.currentState == State.ATTACKING){
+//        if(this.currentState == State.ATTACKING){
             this.adjustRenderCorrections(currentFrame);
             w = currentFrame.getRegionWidth() * MapHandler.unitScale;
             h = currentFrame.getRegionHeight() * MapHandler.unitScale;
             if(this.atkState == GameActor.Atk_State.CROUCH_ATK){
                 h += 1.2f;
             }
-        }
+//        }
         if(this.facingRight){
             x -= this.renderCorrection.x;
         }else{
