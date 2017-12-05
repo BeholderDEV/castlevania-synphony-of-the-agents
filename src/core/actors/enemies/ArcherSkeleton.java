@@ -61,14 +61,18 @@ public class ArcherSkeleton extends Enemy{
         float[] renderValues = super.getSpriteRenderValues(currentFrame);
         batch.draw(currentFrame, renderValues[0], renderValues[1], renderValues[2], renderValues[3]);
         for (Arrow arrow : arrows) {
-            float w = 6f;
+            float w = arrow.width;
+            if(arrow.positionX<0)
+            {
+                continue;
+            }
             if(arrow.isFaceToRight()){
                 arrow.positionX -= this.renderCorrection.x;
             }else{
                 arrow.positionX += this.renderCorrection.x;
                 w *= -1;
             }
-            batch.draw(arrowImg, arrow.positionX, arrow.positionY, w, 6f);
+            batch.draw(arrowImg, arrow.positionX, arrow.positionY, w, arrow.height);
         }
     }
 

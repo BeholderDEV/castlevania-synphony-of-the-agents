@@ -6,6 +6,8 @@
 package ai.behavior;
 
 import static ai.behavior.SwordAgentBehavior.DISTANCE_TO_ATK_PLAYER;
+import com.badlogic.gdx.math.Rectangle;
+import core.actors.CollisionHandler;
 import core.actors.GameActor;
 import core.actors.enemies.ArcherSkeleton;
 import core.actors.enemies.Enemy;
@@ -76,7 +78,9 @@ public class ArcherAgentBehavior extends AgentBehavior{
     
     @Override
     public void checkCollisions(){
-        
+        if(this.container.getCurrentState() == GameActor.State.ATTACKING && this.container.getStateTime() >= GameActor.STANDARD_ATK_FRAME_TIME * 2){
+            this.updateWeaponHit();
+        }
     }
     
     @Override
@@ -85,5 +89,17 @@ public class ArcherAgentBehavior extends AgentBehavior{
             super.container.getVelocity().set(0, 0);
             super.container.setCurrentState(GameActor.State.DYING);
         }
+    }
+    
+    private void updateWeaponHit(){
+        Rectangle weaponArea = CollisionHandler.rectanglePool.obtain();
+        for (Arrow arrow : ((ArcherSkeleton)super.container).getArrows()) {
+            weaponArea.set(arrow.positionX, arrow.positionY, arrow.width, arrow.height);
+            if(CollisionHandler.checkCollisionBetweenBodyAndObject(this.player, weaponArea)){
+                this.player.receiveDamage(this.container.getBody(), 1);
+                arrow.positionX = -1;
+            }            
+        }
+        CollisionHandler.rectanglePool.free(weaponArea);
     }
 }

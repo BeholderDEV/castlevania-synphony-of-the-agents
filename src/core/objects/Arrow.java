@@ -12,6 +12,8 @@ package core.objects;
 public class Arrow {
     public float positionX;
     public float positionY;
+    public float width = 5f;
+    public float height = 6f;
     boolean faceToRight;
 
     public Arrow(float positionX, float positionY, boolean faceToRight) {
