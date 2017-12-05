@@ -7,8 +7,11 @@ package ai.behavior;
 
 import static ai.behavior.SwordAgentBehavior.DISTANCE_TO_ATK_PLAYER;
 import core.actors.GameActor;
+import core.actors.enemies.ArcherSkeleton;
 import core.actors.enemies.Enemy;
+import core.objects.Arrow;
 import jade.core.Agent;
+import java.awt.Point;
 
 /**
  *
@@ -17,7 +20,7 @@ import jade.core.Agent;
 public class ArcherAgentBehavior extends AgentBehavior{
     
     private GameActor player;
-    public static final float DISTANCE_TO_ATK_PLAYER = 7f;
+    public static final float DISTANCE_TO_ATK_PLAYER = 15f;
     
     public ArcherAgentBehavior(Enemy container, Agent a, long period) {
         super(container, a, period);
@@ -57,6 +60,7 @@ public class ArcherAgentBehavior extends AgentBehavior{
             super.container.setStateTime(0);
             super.container.getVelocity().set(0, 0);
             super.container.setCurrentState(GameActor.State.ATTACKING);
+            ((ArcherSkeleton)super.container).getArrows().add(new Arrow(this.container.getBody().x, this.container.getBody().y, super.container.isFacingRight()));
         }
     }
 
