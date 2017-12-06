@@ -21,6 +21,7 @@ import core.util.AnimationManager;
 import core.util.AssetsManager;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -60,16 +61,24 @@ public class ArcherSkeleton extends Enemy{
         TextureRegion currentFrame = this.getCurrentFrame();
         float[] renderValues = super.getSpriteRenderValues(currentFrame);
         batch.draw(currentFrame, renderValues[0], renderValues[1], renderValues[2], renderValues[3]);
-        for (Arrow arrow : arrows) {
+        
+        Iterator<Arrow> ai = arrows.iterator();
+        while (ai.hasNext())
+        {
+            Arrow arrow = ai.next();
             float w = arrow.width;
             if(arrow.positionX<0)
             {
+                ai.remove();
                 continue;
             }
-            if(arrow.isFaceToRight()){
-                arrow.positionX -= this.renderCorrection.x;
-            }else{
-                arrow.positionX += this.renderCorrection.x;
+            if(arrow.isFaceToRight())
+            {
+                arrow.positionX += 0.3f;
+            }
+            else
+            {
+                arrow.positionX -= 0.3f;
                 w *= -1;
             }
             batch.draw(arrowImg, arrow.positionX, arrow.positionY, w, arrow.height);
@@ -91,6 +100,27 @@ public class ArcherSkeleton extends Enemy{
             float y = (super.body.y + super.body.height) - super.body.height * 0.35f;
             float h = 1;
             batch.draw(AssetsManager.assets.get("assets/img/square.png", Texture.class), x, y, w, h);
+        }
+        Iterator<Arrow> ai = arrows.iterator();
+        while (ai.hasNext())
+        {
+            Arrow arrow = ai.next();
+            float w = arrow.width;
+            if(arrow.positionX<0)
+            {
+                ai.remove();
+                continue;
+            }
+            if(arrow.isFaceToRight())
+            {
+                arrow.positionX += 0.1f;
+            }
+            else
+            {
+                arrow.positionX -= 0.1f;
+                w *= -1;
+            }
+            batch.draw(AssetsManager.assets.get("assets/img/square.png", Texture.class), arrow.positionX, arrow.positionY+3f, w, arrow.height-5f);
         }
     }
 
