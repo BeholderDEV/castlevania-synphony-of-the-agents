@@ -178,8 +178,9 @@ public class PlayerBehavior {
         this.playerHandler.setFacingRight(dmgReason.x > this.playerHandler.getBody().x);
     }
         
-    public void checkCollisions(MapHandler map, Array<GameActor> stageActors){
+    public void checkCollisions(float deltaTime, MapHandler map, Array<GameActor> stageActors){
         CollisionHandler.checkGroundCollision(map, this.playerHandler);
+        CollisionHandler.checkWallCollision(map, this.playerHandler, deltaTime);
         this.updateCollisionWithEnemy(stageActors);
         this.updateCollisionWithStairs(map, stageActors);
     }

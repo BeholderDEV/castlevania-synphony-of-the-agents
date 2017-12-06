@@ -59,5 +59,30 @@ public class CollisionHandler {
         }
     }
     
+    public static boolean checkWallCollision(MapHandler map, GameActor actor, float delta){
+        int startX = Math.round(actor.getBody().x), 
+            startY = Math.round(actor.getBody().y + actor.getBody().height * 0.05f), 
+            endX = Math.round(actor.getBody().x + actor.getBody().width), 
+            endY = Math.round(actor.getBody().y + actor.getBody().height * 0.95f);
+        if(map.checkLayerCollision(MapHandler.Layer.GROUND, startX, startY, endX, endY)){
+            if(actor.getCurrentState() == GameActor.State.WALKING){
+                actor.velocity.x *= -1;
+                actor.velocity.y *= -1;
+                actor.updatePosition(delta);
+                actor.setCurrentState(GameActor.State.STANDING);
+            }
+            if(actor.getCurrentState() == GameActor.State.JUMPING){
+                actor.velocity.x *= -1;
+                actor.velocity.y *= -1;
+                actor.updatePosition(delta);
+                actor.velocity.y *= -1;
+                if(actor.getVelocity().y > 0){
+                    actor.getVelocity().y = 0;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
     
 }
