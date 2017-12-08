@@ -68,6 +68,7 @@ public class BatAgentBehavior extends AgentBehavior{
     public void checkCollisions() {
         if(CollisionHandler.checkCollisionBetweenTwoActorsBodies(this.player, super.container) != null)
         {
+            this.player.receiveDamage(super.container.getBody(), 1);
             this.container.setCurrentState(GameActor.State.DYING);
         }
     }

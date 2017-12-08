@@ -25,7 +25,6 @@ import core.actors.CollisionHandler;
 import core.util.AssetsManager;
 import core.actors.GameActor;
 import core.actors.enemies.Enemy;
-import core.actors.enemies.EnemyFactory;
 import core.map.MapHandler;
 import core.actors.player.PlayerHandler;
 import static core.util.AssetsManager.assets;
@@ -35,7 +34,7 @@ import static core.util.AssetsManager.assets;
  * @author Augustop
  */
 public class GameScreen implements Screen {
-    public static final boolean DEBUGGING = false;
+    public static final boolean DEBUGGING = true;
     public static final int SCREEN_WIDTH = 50;
     public static final int SCREEN_HEIGHT = 20;
     private final ScreenHandler game;
@@ -56,7 +55,8 @@ public class GameScreen implements Screen {
 
 //        this.mapHandler = new MapHandler("assets/map/mapadahora.tmx");
         this.heartImg = new TextureRegion(AssetsManager.assets.get("assets/img/heart.png", Texture.class), 16,16);
-        this.mapHandler = new MapHandler("assets/map/muitogrande.tmx");
+//        this.mapHandler = new MapHandler("assets/map/muitogrande.tmx");
+        this.mapHandler = new MapHandler("assets/map/mapadahora2.tmx"); 
         
         this.camera.update();
         this.mapHandler.getMapRenderer().setView(camera);
@@ -66,7 +66,7 @@ public class GameScreen implements Screen {
     
     private void createActors(){
         PlayerHandler player = new PlayerHandler();
-//        player.getBody().setPosition(5, 3.4f);
+        player.getBody().setPosition(340, 3.4f);
 
         this.actors.add(player);
         MapObjects objects = this.mapHandler.getMapObjetcs();
@@ -81,13 +81,13 @@ public class GameScreen implements Screen {
                     player.getBody().setPosition(rectObject.x, rectObject.y);
                 break;
                 case "sword":
-                    this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.SWORD_SKELETON, 12, new Vector2(rectObject.x, rectObject.y), this));
+//                    this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.SWORD_SKELETON, 12, new Vector2(rectObject.x, rectObject.y), this));
                 break;
                 case "archer":
-                    this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.ARCHER_SKELETON, 6, new Vector2(rectObject.x, rectObject.y), this));
+//                    this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.ARCHER_SKELETON, 6, new Vector2(rectObject.x, rectObject.y), this));
                 break;
                 case "bat":
-                    this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.BAT, 12, new Vector2(rectObject.x, rectObject.y), this));
+//                    this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.BAT, 12, new Vector2(rectObject.x, rectObject.y), this));
                 break;
             }
         }
@@ -115,9 +115,7 @@ public class GameScreen implements Screen {
         this.mapHandler.getMapRenderer().render();
         this.game.batch.setProjectionMatrix(camera.combined);
         this.game.batch.begin();
-        for(int i=0; i<this.actors.get(0).getLifePoints(); i++){
-            this.game.batch.draw(heartImg, this.camera.position.x-SCREEN_WIDTH/2f+2+i, this.camera.position.y+SCREEN_HEIGHT/2f-2,1f,1f);
-        }
+
         
         for (GameActor actor : actors) {
             actor.renderActor(this.game.batch);
@@ -125,6 +123,9 @@ public class GameScreen implements Screen {
                 actor.drawRecOverBody(this.game.batch);
                 actor.drawDebugRec(this.game.batch);
             }
+        }
+        for(int i=0; i<this.actors.get(0).getLifePoints(); i++){
+            this.game.batch.draw(heartImg, this.camera.position.x-SCREEN_WIDTH/2f+2+i, this.camera.position.y+SCREEN_HEIGHT/2f-2,1f,1f);
         }
         this.game.batch.end();
         this.playSounds();
