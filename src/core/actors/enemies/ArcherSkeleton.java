@@ -49,7 +49,6 @@ public class ArcherSkeleton extends Enemy{
     public void updateActor(float deltaTime, MapHandler map, Array<GameActor> stageActors) {
         super.stateTime += deltaTime;
         this.updateArrows();
-        System.out.println(this.body.toString());
     }
     
     @Override

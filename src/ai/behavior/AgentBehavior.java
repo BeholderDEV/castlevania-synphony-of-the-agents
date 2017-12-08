@@ -6,6 +6,7 @@
 package ai.behavior;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import core.actors.CollisionHandler;
 import core.actors.GameActor;
 import core.actors.enemies.Bat;
 import core.actors.enemies.Enemy;
@@ -98,6 +99,26 @@ public abstract class AgentBehavior extends TickerBehaviour{
             return true;
         }
         return false;
+    }
+    
+    protected void groundBehavior(){
+        CollisionHandler.checkGroundCollision(this.container.getGameScreen().getMapHandler(), this.container);
+        if(this.container.getCurrentState() == GameActor.State.JUMPING){
+            if(this.container.getVelocity().y == 0){
+                this.container.getVelocity().y = this.container.getJumpingSpeed();
+            }
+        }else{
+            this.container.getVelocity().y = 0;
+        }
+    }
+    
+    protected void wallBehavior(){
+        boolean wallCollision = CollisionHandler.checkWallCollision(this.container.getGameScreen().getMapHandler(), this.container, this.container.getGameScreen().getLastDelta());
+        if(wallCollision){
+            this.container.getVelocity().x = this.container.getWalkingSpeed();
+            this.container.getVelocity().y = this.container.getJumpingSpeed();
+            this.container.setCurrentState(GameActor.State.JUMPING);
+        }
     }
     
     public abstract void defineAction();

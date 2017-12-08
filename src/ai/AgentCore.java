@@ -14,6 +14,7 @@ import core.actors.enemies.SwordSkeleton;
 import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.Property;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import java.util.logging.Level;
@@ -32,7 +33,7 @@ public class AgentCore extends Agent{
         if(args != null && args.length > 0){
             if(getAID().getName().startsWith("Sword_Skeleton")){
                 addBehaviour(new SwordAgentBehavior((SwordSkeleton) args[0], this, AgentCreator.BEHAVIOR_DELAY));
-                this.registerSwordService();
+                this.registerSwordService((SwordSkeleton) args[0]);
             }
             if(getAID().getName().startsWith("Archer_Skeleton")){
                 addBehaviour(new ArcherAgentBehavior((ArcherSkeleton) args[0], this, AgentCreator.BEHAVIOR_DELAY));
@@ -43,12 +44,14 @@ public class AgentCore extends Agent{
         }
     }
     
-    private void registerSwordService(){
+    private void registerSwordService(SwordSkeleton container){
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName(getAID());
         ServiceDescription sd = new ServiceDescription();
         sd.setName(this.getLocalName());
         sd.setType("guard");
+        sd.addProperties(new Property("x", container.getBody().x));
+        sd.addProperties(new Property("y", container.getBody().y));
         dfd.addServices(sd);
         try {
             DFService.register(this, dfd);

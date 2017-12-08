@@ -51,7 +51,7 @@ public class GameScreen implements Screen {
 
 //        this.mapHandler = new MapHandler("assets/map/mapadahora.tmx");
         this.heartImg = new TextureRegion(AssetsManager.assets.get("assets/img/heart.png", Texture.class), 16,16);
-        this.mapHandler = new MapHandler("assets/map/mapadahora.tmx");
+        this.mapHandler = new MapHandler("assets/map/mapadahora2.tmx");
         
         this.camera.update();
         this.mapHandler.getMapRenderer().setView(camera);
@@ -81,8 +81,10 @@ public class GameScreen implements Screen {
                 break;
             }
         }
-//        this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.ARCHER_SKELETON, 6, new Vector2(43, 3.4f), this));
-//        this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.SWORD_SKELETON, 14, new Vector2(43, 3.4f), this));
+        this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.ARCHER_SKELETON, 6, new Vector2(153, 3.4f), this));
+        this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.ARCHER_SKELETON, 6, new Vector2(133, 3.4f), this));
+        this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.SWORD_SKELETON, 14, new Vector2(84, 3.4f), this));
+        this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.SWORD_SKELETON, 14, new Vector2(83, 3.4f), this));
     }
 
     @Override

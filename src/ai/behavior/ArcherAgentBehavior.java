@@ -17,9 +17,11 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.Property;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
+import jade.util.leap.Iterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -36,6 +38,7 @@ public class ArcherAgentBehavior extends AgentBehavior{
     private float attack_cooldown = 2f;
     private boolean arrowCreatedOnAtk = false;
     private final List<AID> swordGuardiansAdress = new ArrayList<>();
+//    private float closestGuardian = -1f;
     private final DFAgentDescription guardianSearcher = new DFAgentDescription();
     private long lastPositionUpdateTime = 0;
     private long lastGuardianSearchTime = 0;
@@ -125,40 +128,14 @@ public class ArcherAgentBehavior extends AgentBehavior{
     
     @Override
     public void checkCollisions(){
-        this.groundBehavior();
-        this.wallBehavior();
+        super.groundBehavior();
+        super.wallBehavior();
         if(((ArcherSkeleton)super.container).getArrows().size != 0){
             this.updateWeaponHit();
         }
     }
     
-    private void wallBehavior(){
-        boolean wallCollision = CollisionHandler.checkWallCollision(super.container.getGameScreen().getMapHandler(), this.container, super.container.getGameScreen().getLastDelta());
-        if(wallCollision){
-            super.container.getVelocity().x = super.container.getWalkingSpeed();
-            super.container.getVelocity().y = super.container.getJumpingSpeed();
-            super.container.setCurrentState(GameActor.State.JUMPING);
-        }
-    }
-    
-    private void groundBehavior(){
-        CollisionHandler.checkGroundCollision(super.container.getGameScreen().getMapHandler(), super.container);
-        if(super.container.getCurrentState() == GameActor.State.JUMPING){
-            if(super.container.getVelocity().y == 0){
-                super.container.getVelocity().y = super.container.getJumpingSpeed();
-                if(super.rand.nextInt(10) > 6){
-                    return;
-                }
-//                if(this.patronArcherAddress != null && super.container.foundPlayer() && !this.closeToPatron){;
-//                    super.container.setFacingRight(super.container.getBody().x - this.patronPosition.x < 0);
-//                }
-            }
-        }else{
-            super.container.getVelocity().y = 0;
-        }
-
-    }
-    
+        
     @Override
     public void checkStatus(){
         if(super.container.getLifePoints() <= 0){
@@ -228,17 +205,49 @@ public class ArcherAgentBehavior extends AgentBehavior{
             return;
         }
         try {
+            AID closestAddress = null;
+            double dist, closestGuardian = -1;
             DFAgentDescription[] result = DFService.search(myAgent, this.guardianSearcher);
             for (int i = 0; i < result.length; i++) {
+                dist = this.defineDistanceToGuardian(result[i]);
+                if(dist != -1){
+                    if(closestGuardian == -1 || (closestGuardian > dist)){
+                        closestGuardian = dist;
+                        closestAddress = result[i].getName();
+                    }
+                }
+            }
+            if(closestAddress != null){
+                System.out.println(closestAddress);
                 ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-                msg.addReceiver(result[i].getName());
+                msg.addReceiver(closestAddress);
                 msg.setContent("Requesting guard");
                 super.myAgent.send(msg);
             }
+
         } catch (FIPAException ex) {
             Logger.getLogger(ArcherAgentBehavior.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.lastGuardianSearchTime = System.currentTimeMillis();
+    }
+    
+    private double defineDistanceToGuardian(DFAgentDescription result){
+        float dx = -1, dy = -1;
+        Iterator iter = result.getAllServices();
+        while(iter.hasNext()){
+            ServiceDescription sd = (ServiceDescription) iter.next();
+            Iterator proIter = sd.getAllProperties();
+            while(proIter.hasNext()){
+                Property p = (Property) proIter.next();
+                if(p.getName().equals("x")){
+                    dx = Math.abs(super.container.getBody().x - Float.parseFloat((String)p.getValue()));
+                }
+                if(p.getName().equals("y")){
+                    dy = Math.abs(super.container.getBody().y - Float.parseFloat((String)p.getValue()));
+                }
+            }
+        }
+        return ((dx != -1 && dy != -1) ? (0.394 * (dx + dy) + 0.554 * Math.max(dx, dy)): -1);
     }
     
     private void sendConfirmationMessage(ACLMessage msg){

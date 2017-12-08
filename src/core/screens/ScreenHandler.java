@@ -26,9 +26,9 @@ public class ScreenHandler extends Game{
         AssetsManager.assets.load("assets/img/titlescreen.jpeg", Texture.class);
         AssetsManager.assets.load("assets/img/titlescreenclean.jpeg", Texture.class);
         AssetsManager.assets.finishLoading();
-        this.setScreen(new MainMenuScreen(this));
-//        AssetsManager.loadFirstFaseAssets();
-//        this.setScreen(new GameScreen(this, new PlayerHandler()));
+//        this.setScreen(new MainMenuScreen(this));
+        AssetsManager.loadFirstFaseAssets();
+        this.setScreen(new GameScreen(this, new PlayerHandler()));
     }
 
     public void render() {
