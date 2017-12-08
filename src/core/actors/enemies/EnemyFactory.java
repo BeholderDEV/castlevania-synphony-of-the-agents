@@ -31,6 +31,8 @@ public class EnemyFactory {
                 return new SwordSkeleton(walkingSpeed, enemyBody, gameScreen);
             case ARCHER_SKELETON:
                 return new ArcherSkeleton(walkingSpeed, enemyBody, gameScreen, walkingRange);
+            case BAT:
+                return new Bat(walkingSpeed, enemyBody, gameScreen);
         }
         return null;
     }

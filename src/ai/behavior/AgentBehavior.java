@@ -7,6 +7,7 @@ package ai.behavior;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import core.actors.GameActor;
+import core.actors.enemies.Bat;
 import core.actors.enemies.Enemy;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
@@ -81,7 +82,10 @@ public abstract class AgentBehavior extends TickerBehaviour{
         float dx = Math.abs(this.container.getBody().x - this.player.getBody().x);
         float dy = Math.abs(this.container.getBody().y - this.player.getBody().y);
         if(dx < camera.viewportWidth / 2f && dy < camera.viewportHeight / 2f){
-            this.container.getVelocity().x = this.container.getWalkingSpeed();
+            if(!(this.container instanceof Bat))
+            {
+                this.container.getVelocity().x = this.container.getWalkingSpeed();                
+            }
             return true;
         }
         return false;

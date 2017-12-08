@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="200" height="25" tilewidth="8" tileheight="8" nextobjectid="43">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="200" height="25" tilewidth="8" tileheight="8" nextobjectid="44">
  <tileset firstgid="1" source="testTileSet2.tsx"/>
  <layer name="back" width="200" height="25">
   <data encoding="csv">
@@ -126,5 +126,6 @@
   <object id="32" name="sword" x="1416.5" y="161" width="10.5" height="8.5"/>
   <object id="36" name="sword" x="354.5" y="165.5" width="13" height="11"/>
   <object id="39" name="archer" x="1505" y="95" width="11" height="8.5"/>
+  <object id="43" name="bat" x="411.455" y="86.3637" width="7.27273" height="7.09091"/>
  </objectgroup>
 </map>
