@@ -71,10 +71,10 @@ public class GameScreen implements Screen {
             rectObject = ((RectangleMapObject)object).getRectangle();
             switch(object.getName()){
                 case "sword":
-                    this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.SWORD_SKELETON, 12, new Vector2(rectObject.x, rectObject.y), this));
+                    //this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.SWORD_SKELETON, 12, new Vector2(rectObject.x, rectObject.y), this));
                 break;
                 case "archer":
-                    this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.ARCHER_SKELETON, 6, new Vector2(rectObject.x, rectObject.y), this));
+                    //this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.ARCHER_SKELETON, 6, new Vector2(rectObject.x, rectObject.y), this));
                 break;
                 case "bat":
                     this.actors.add(EnemyFactory.createEnemy(EnemyFactory.enemyType.BAT, 12, new Vector2(rectObject.x, rectObject.y), this));

@@ -56,7 +56,7 @@ public class BatAgentBehavior extends AgentBehavior{
 
 
         super.container.getVelocity().x = super.container.getWalkingSpeed()*(this.player.getBody().x - this.container.getBody().x)/distance;
-        super.container.getVelocity().y = super.container.getWalkingSpeed()*(this.player.getBody().y - this.container.getBody().y)/distance;
+        super.container.getVelocity().y = super.container.getWalkingSpeed()*(this.player.getBody().y+3f - this.container.getBody().y)/distance;
         super.container.setFacingRight(super.container.getBody().x - this.player.getBody().x < 0);
         if(!super.container.isFacingRight())
         {
