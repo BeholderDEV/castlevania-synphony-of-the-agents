@@ -12,13 +12,6 @@ import core.actors.enemies.ArcherSkeleton;
 import core.actors.enemies.Bat;
 import core.actors.enemies.SwordSkeleton;
 import jade.core.Agent;
-import jade.domain.DFService;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.Property;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.domain.FIPAException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

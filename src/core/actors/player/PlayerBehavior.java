@@ -56,14 +56,16 @@ public class PlayerBehavior {
                 }
             break;
             case HURTED:
-                this.defineActionHurted(deltaTime);
+                this.defineActionHurted(deltaTime, map);
             break;
         }
     }
     
-    private void defineActionHurted(float deltaTime){
+    private void defineActionHurted(float deltaTime, MapHandler map){
         if(this.playerHandler.getStateTime() >= 0.2f){
-            this.playerHandler.setCurrentState(GameActor.State.STANDING);
+            this.playerHandler.setCurrentState(GameActor.State.JUMPING);
+            this.playerHandler.getVelocity().y = 1;
+            CollisionHandler.checkGroundCollision(map, playerHandler);
         }
     }
     
@@ -286,6 +288,10 @@ public class PlayerBehavior {
             endY = Math.round(b.y + this.playerHandler.getSpriteAdjustmentForCollision()[1] + (b.height + this.playerHandler.getSpriteAdjustmentForCollision()[3]) * 0.95f);
         batch.draw(AssetsManager.assets.get("assets/img/square.png", Texture.class), startX, startY, 1, 1);
         batch.draw(AssetsManager.assets.get("assets/img/square.png", Texture.class), endX, endY, 1, 1);
+        int centerX = Math.round(((b.x + this.playerHandler.getSpriteAdjustmentForCollision()[0]) +
+                                  (b.width + this.playerHandler.getSpriteAdjustmentForCollision()[2])/2f));
+//        batch.draw(AssetsManager.assets.get("assets/img/square.png", Texture.class), centerX, startY, 1, 1);
+    
     }
         
     public boolean isUpstairs(){
